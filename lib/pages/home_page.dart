@@ -251,11 +251,7 @@ class _HomeContentState extends State<HomeContent> {
         // const SizedBox(height: 16),
 
         // Promotional banner
-        PromoBanner(
-          onTap: () {
-            _openSong(const MusicItem('Sisa Rasa', 'Mahalini', 'lib/assets/sisa rasa.jpg', Color(0xFFE8A7B0), duration: '4:10', lyrics: 'Masih jelas teringat\nPelukannya yang hangat\nSeakan semua tak mungkin menghilang\nKini hanya kenangan yang telah kau tinggalkan\n\nTak sanggup lagi waktu bersama\nMeninggalkan sisa rasa di dada'));
-          },
-        ),
+        PromoBanner(),
 
         const SizedBox(height: 24),
 
@@ -291,7 +287,6 @@ class _HomeContentState extends State<HomeContent> {
 
         const SizedBox(height: 16),
 
-        // Music categories
         // Music category tabs
         SizedBox(
           height: 48,
@@ -432,11 +427,19 @@ class _HomeContentState extends State<HomeContent> {
     );
   }
 
-  void _openSong(MusicItem song) => Navigator.of(context).push(MaterialPageRoute(builder: (_) => NowPlayingPage(song: song)));
+  void _openSong(MusicItem song) => Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => NowPlayingPage(
+          song: song)
+      )
+  );
 
   void _openArtist(MusicItem artist) {
     final songs = _songs.where((song) => song.subtitle.toLowerCase().contains(artist.title.toLowerCase())).toList();
     final fallbackSongs = songs.isEmpty ? _songs.take(3).toList() : songs;
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => ArtistPage(artist: artist, songs: fallbackSongs)));
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => ArtistPage(
+            artist: artist, songs: fallbackSongs)
+        )
+    );
   }
 }

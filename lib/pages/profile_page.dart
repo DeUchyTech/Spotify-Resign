@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotify_redesign/pages/Settings_Page.dart';
+
+import 'Settings_Page.dart';
 
 class ProfilePage extends StatefulWidget {
   final String fullname;
@@ -48,20 +51,11 @@ class _ProfilePageState extends State<ProfilePage> {
     if (!mounted) return;
 
     setState(() {
-      _name =
-          prefs.getString('profile_name') ?? widget.fullname;
-
-      _email =
-          prefs.getString('profile_email') ?? widget.email;
-
-      _profileImage =
-          prefs.getString('profile_image') ?? '';
-
-      _followers =
-          prefs.getInt('profile_followers') ?? 129;
-
-      _following =
-          prefs.getInt('profile_following') ?? 238;
+      _name = prefs.getString('profile_name') ?? widget.fullname;
+      _email = prefs.getString('profile_email') ?? widget.email;
+      _profileImage = prefs.getString('profile_image') ?? '';
+      _followers = prefs.getInt('profile_followers') ?? 129;
+      _following = prefs.getInt('profile_following') ?? 238;
     });
   }
 
@@ -73,21 +67,11 @@ class _ProfilePageState extends State<ProfilePage> {
     final SharedPreferences prefs =
     await SharedPreferences.getInstance();
 
-    await prefs.setString(
-      'profile_name',
-      name,
-    );
-
-    await prefs.setString(
-      'profile_email',
-      email,
-    );
+    await prefs.setString('profile_name', name);
+    await prefs.setString('profile_email', email);
 
     if (image != null && image.isNotEmpty) {
-      await prefs.setString(
-        'profile_image',
-        image,
-      );
+      await prefs.setString('profile_image', image);
     }
 
     if (!mounted) return;
@@ -104,8 +88,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<String?> _pickProfileImage() async {
     try {
-      final XFile? image =
-      await _imagePicker.pickImage(
+      final XFile? image = await _imagePicker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 85,
       );
@@ -120,9 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'Unable to select image: $e',
-          ),
+          content: Text('Unable to select image: $e'),
         ),
       );
 
@@ -132,19 +113,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _editProfile() async {
     final TextEditingController nameController =
-    TextEditingController(
-      text: _name,
-    );
+    TextEditingController(text: _name);
 
     final TextEditingController emailController =
-    TextEditingController(
-      text: _email,
-    );
+    TextEditingController(text: _email);
 
     String selectedImage = _profileImage;
 
-    final bool? saved =
-    await showDialog<bool>(
+    final bool? saved = await showDialog<bool>(
       context: context,
       builder: (BuildContext dialogContext) {
         return StatefulBuilder(
@@ -152,6 +128,8 @@ class _ProfilePageState extends State<ProfilePage> {
               BuildContext context,
               StateSetter setDialogState,
               ) {
+            final ThemeData theme = Theme.of(context);
+
             return AlertDialog(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(22),
@@ -197,9 +175,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             width: 30,
                             height: 30,
                             decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .primary,
+                              color: theme.colorScheme.primary,
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
@@ -211,21 +187,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 22),
-
                     TextField(
                       controller: nameController,
                       textCapitalization:
                       TextCapitalization.words,
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
                       decoration: InputDecoration(
                         labelText: 'Name',
-                        labelStyle: const TextStyle(
-                          fontSize: 14,
-                        ),
                         prefixIcon: const Icon(
                           Icons.person_outline,
                         ),
@@ -235,21 +203,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 16),
-
                     TextField(
                       controller: emailController,
                       keyboardType:
                       TextInputType.emailAddress,
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
                       decoration: InputDecoration(
                         labelText: 'Email',
-                        labelStyle: const TextStyle(
-                          fontSize: 14,
-                        ),
                         prefixIcon: const Icon(
                           Icons.email_outlined,
                         ),
@@ -267,12 +227,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   onPressed: () {
                     Navigator.of(dialogContext).pop(false);
                   },
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
+                  child: const Text('Cancel'),
                 ),
                 FilledButton(
                   onPressed: () {
@@ -296,12 +251,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                     Navigator.of(dialogContext).pop(true);
                   },
-                  child: const Text(
-                    'Save',
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
+                  child: const Text('Save'),
                 ),
               ],
             );
@@ -371,26 +321,16 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           children: [
             _buildTopBar(context),
-
             Expanded(
               child: SingleChildScrollView(
-                physics:
-                const BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
-                    _buildProfileHeader(
-                      context,
-                      dark,
-                    ),
-
+                    _buildProfileHeader(context, dark),
                     const SizedBox(height: 15),
-
                     _buildActionButtons(context),
-
                     const SizedBox(height: 25),
-
                     _buildMostlyPlayed(context),
-
                     const SizedBox(height: 30),
                   ],
                 ),
@@ -402,9 +342,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildTopBar(
-      BuildContext context,
-      ) {
+  Widget _buildTopBar(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
     return SizedBox(
@@ -420,7 +358,6 @@ class _ProfilePageState extends State<ProfilePage> {
               fontSize: 18,
             ),
           ),
-
           Positioned(
             right: 15,
             child: IconButton(
@@ -447,6 +384,8 @@ class _ProfilePageState extends State<ProfilePage> {
       BuildContext context,
       bool dark,
       ) {
+    final ThemeData theme = Theme.of(context);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(
@@ -483,12 +422,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     86,
                   ),
                 ),
-
                 Container(
                   width: 28,
                   height: 28,
-                  decoration: const BoxDecoration(
-                    color: Colors.black,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -500,39 +438,26 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
           ),
-
           const SizedBox(height: 10),
-
           Text(
             _name,
             textAlign: TextAlign.center,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(
+            style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
               fontSize: 16,
             ),
           ),
-
           const SizedBox(height: 3),
-
           Text(
             _email,
             textAlign: TextAlign.center,
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(
+            style: theme.textTheme.bodySmall?.copyWith(
               fontSize: 11,
             ),
           ),
-
           const SizedBox(height: 20),
-
           Row(
-            mainAxisAlignment:
-            MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _buildStatistic(
                 context,
@@ -569,9 +494,7 @@ class _ProfilePageState extends State<ProfilePage> {
               fontSize: 10,
             ),
           ),
-
           const SizedBox(height: 5),
-
           Text(
             value,
             style: Theme.of(context)
@@ -591,8 +514,7 @@ class _ProfilePageState extends State<ProfilePage> {
       BuildContext context,
       ) {
     return Row(
-      mainAxisAlignment:
-      MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _buildActionButton(
           context,
@@ -602,9 +524,7 @@ class _ProfilePageState extends State<ProfilePage> {
             _showFindFriend(context);
           },
         ),
-
         const SizedBox(width: 55),
-
         _buildActionButton(
           context,
           icon: Icons.share_outlined,
@@ -633,9 +553,7 @@ class _ProfilePageState extends State<ProfilePage> {
               icon,
               size: 27,
             ),
-
             const SizedBox(height: 5),
-
             Text(
               label,
               textAlign: TextAlign.center,
@@ -691,9 +609,7 @@ class _ProfilePageState extends State<ProfilePage> {
               fontSize: 17,
             ),
           ),
-
           const SizedBox(height: 11),
-
           ...songs.map(
                 (song) {
               return _buildMostlyPlayedItem(
@@ -723,8 +639,7 @@ class _ProfilePageState extends State<ProfilePage> {
             width: 46,
             height: 46,
             decoration: BoxDecoration(
-              borderRadius:
-              BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8),
             ),
             clipBehavior: Clip.antiAlias,
             child: Image.asset(
@@ -745,9 +660,7 @@ class _ProfilePageState extends State<ProfilePage> {
               },
             ),
           ),
-
           const SizedBox(width: 10),
-
           Expanded(
             child: Column(
               mainAxisAlignment:
@@ -758,20 +671,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text(
                   title,
                   maxLines: 1,
-                  overflow:
-                  TextOverflow.ellipsis,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
                       ?.copyWith(
                     fontSize: 13,
-                    fontWeight:
-                    FontWeight.w600,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-
                 const SizedBox(height: 2),
-
                 Text(
                   artist,
                   style: Theme.of(context)
@@ -784,7 +693,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
           ),
-
           IconButton(
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(
@@ -810,8 +718,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void _showFindFriend(
       BuildContext context,
       ) {
-    final TextEditingController
-    searchController =
+    final TextEditingController searchController =
     TextEditingController();
 
     showModalBottomSheet(
@@ -840,25 +747,22 @@ class _ProfilePageState extends State<ProfilePage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               const SizedBox(height: 15),
-
               TextField(
                 controller: searchController,
                 autofocus: true,
                 decoration: InputDecoration(
                   hintText: 'Search by name',
-                  prefixIcon:
-                  const Icon(Icons.search),
+                  prefixIcon: const Icon(
+                    Icons.search,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius:
                     BorderRadius.circular(14),
                   ),
                 ),
               ),
-
               const SizedBox(height: 15),
-
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
@@ -879,12 +783,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       );
                     }
                   },
-                  child: const Text(
-                    'Search',
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
+                  child: const Text('Search'),
                 ),
               ),
             ],
@@ -919,36 +818,31 @@ class _ProfilePageState extends State<ProfilePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading:
-                const Icon(Icons.play_arrow),
-                title: const Text(
-                  'Play',
-                  style: TextStyle(fontSize: 16),
+                leading: const Icon(
+                  Icons.play_arrow,
                 ),
+                title: const Text('Play'),
                 onTap: () {
                   Navigator.of(sheetContext).pop();
                 },
               ),
-
               ListTile(
-                leading:
-                const Icon(Icons.queue_music),
+                leading: const Icon(
+                  Icons.queue_music,
+                ),
                 title: const Text(
                   'Add to playlist',
-                  style: TextStyle(fontSize: 16),
                 ),
                 onTap: () {
                   Navigator.of(sheetContext).pop();
                 },
               ),
-
               ListTile(
                 leading: const Icon(
                   Icons.remove_circle_outline,
                 ),
                 title: const Text(
                   'Remove from mostly played',
-                  style: TextStyle(fontSize: 16),
                 ),
                 onTap: () {
                   Navigator.of(sheetContext).pop();
@@ -978,7 +872,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 title: const Text(
                   'Edit profile',
-                  style: TextStyle(fontSize: 16),
                 ),
                 onTap: () {
                   Navigator.of(sheetContext).pop();
@@ -995,27 +888,40 @@ class _ProfilePageState extends State<ProfilePage> {
                   );
                 },
               ),
-
               ListTile(
                 leading: const Icon(
                   Icons.settings_outlined,
                 ),
                 title: const Text(
                   'Settings',
-                  style: TextStyle(fontSize: 16),
                 ),
                 onTap: () {
                   Navigator.of(sheetContext).pop();
+
+                  Future.delayed(
+                    const Duration(
+                      milliseconds: 150,
+                    ),
+                        () {
+                      if (mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                            const SettingsPage(),
+                          ),
+                        );
+                      }
+                    },
+                  );
                 },
               ),
-
               ListTile(
                 leading: const Icon(
                   Icons.logout,
                 ),
                 title: const Text(
                   'Logout',
-                  style: TextStyle(fontSize: 16),
                 ),
                 onTap: () {
                   Navigator.of(sheetContext).pop();
